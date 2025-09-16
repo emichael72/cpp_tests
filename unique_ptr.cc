@@ -1,5 +1,5 @@
-// Note clang-format WebKit style
-// Implementation of a unique pointer class with move semantics.
+// clang-format WebKit style
+// implementation of a unique pointer class with move semantics.
 
 #include <iostream>
 #include <string>
@@ -65,6 +65,7 @@ int main()
     UniquePtr<int> p1(new int(42));
     try {
         p1.name = "p1";
+    
 
         // UniquePtr<int> p2 = p1; // ok - getting compile time error
 
@@ -76,14 +77,13 @@ int main()
             cout << p1.name << " is now nullptr after move.\n";
         }
 
-        int* x = p1.release(); // how? , knowing that p1 is nullptr aafter move
-                               // this should have never worked
+        int* x = p2.release(); // returns raw pointer and sets p2 to nullptr
 
         if (p2.get() == nullptr) {
             throw std::runtime_error("p2 is nullptr after move!");
         }
 
-        // doing just 'return p2.get()' gives runtime error, however I would expect this to pass given the exception above
+        // doing just 'return p2.get()' gives runtime error, however I would expect this to pass given the exception handling above
         return p2.get() != nullptr ? 0 : 1;
 
     } catch (const std::runtime_error& e) {
