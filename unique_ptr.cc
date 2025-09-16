@@ -1,95 +1,136 @@
 // clang-format WebKit style
-// implementation of a unique pointer class with move semantics.
+// Implementation of a unique pointer class with move semantics.
+
 
 #include <iostream>
-#include <string>
 
-using namespace std;
+
+typedef void (*p_free)(void* ptr);
+typedef void *(*p_alloc)(size_t size);
+
+
+// UniquePtr<char> uniq_p1(malloc(10), free);
+// UniquePtr<void> uniq_p2(fd, close);
 
 template <typename T>
 class UniquePtr {
-    T* ptr;
-
 public:
     explicit UniquePtr(T* p = nullptr)
-        : ptr(p)
+        : m_ptr(p)
     {
-    } // ToDo: explicit? why?
+    }
+
+    explicit UniquePtr(size_t size, p_free freeFunc = nullptr, p_alloc allocFunc = nullptr)
+        : m_size(size), m_deleter(freeFunc), m_allocator(allocFunc)
+    {
+        if (m_size == 0 || freeFunc == nullptr || allocFunc == nullptr) {
+            throw std::invalid_argument("UniquePtr: size must be > 0 and allocator/deleter must be provided");
+        }
+
+        this->allocator();
+    }
 
     ~UniquePtr()
     {
-        cout << "deleting " << name << endl;
-        delete ptr;
-        ptr = nullptr;
+       this->deleter();
     }
 
-    // kill copy constructor and the '=' operator
     UniquePtr(const UniquePtr&) = delete;
     UniquePtr& operator=(const UniquePtr&) = delete;
 
-    string name = "unnamed";
-
-    // handles move constructor (aka the && operator)
-    // TODO how does the compiler know to map '&&' to std::move() ?
+    // Handles move constructor
     UniquePtr(UniquePtr&& other) noexcept
-        : ptr(other.ptr)
+        : m_ptr(other.m_ptr)
     {
-        other.ptr = nullptr;
+        other.m_ptr = nullptr;
     }
 
-    // assigne operator for move , exampel p2 = std::move(p1);
     UniquePtr& operator=(UniquePtr&& other) noexcept
     {
         if (this != &other) {
-            delete ptr;
-            ptr = other.ptr;
-            other.ptr = nullptr;
+            
+            this->deleter();
+            
+            m_ptr = other.m_ptr;
+            other.m_ptr = nullptr;
         }
         return *this;
     }
 
-    // access
-    T* get() const { return ptr; }
+    // Access
+    T* get() const { return m_ptr; }
 
-    // manual release so I could get row pointer from unique ptr int* raw = p.release();
+
+    // Manual release
     T* release()
     {
-        T* tmp = ptr;
-        ptr = nullptr;
+        T* tmp = m_ptr;
+        m_ptr = nullptr;
         return tmp;
+    }
+
+private:
+
+    T* m_ptr = nullptr;
+    size_t m_size = 0;
+    p_free m_deleter = nullptr;
+    p_alloc m_allocator = nullptr;
+    
+    
+    void deleter() {
+        if(m_ptr != nullptr) {
+              if(m_deleter != nullptr) {
+                m_deleter(m_ptr);
+            } 
+            else {
+                delete m_ptr;
+            }
+       }
+    }
+
+    void allocator() {
+        if(m_ptr == nullptr) {
+            if (m_allocator != nullptr) {
+                m_ptr = static_cast<T*>(m_allocator(m_size * sizeof(T)));
+
+            }
+            else {
+                m_ptr = new T;
+            }
+        }
     }
 };
 
 int main()
 {
-    UniquePtr<int> p1(new int(42));
     try {
-        p1.name = "p1";
-    
+        
+        UniquePtr<int> p1(sizeof(int),free, malloc);
+        // UniquePtr<int> p1(new int(42));
 
-        // UniquePtr<int> p2 = p1; // ok - getting compile time error
+        int p_val = 0;
+        int dummy = 42;
 
-        UniquePtr<int> p2 = std::move(p1); // ok
 
-        p2.name = "p2";
+        *p1.get() = 42;
+        UniquePtr<int> p2 = std::move(p1); 
 
-        if (p1.get() == nullptr) {
-            cout << p1.name << " is now nullptr after move.\n";
+        if (p1.get() != nullptr) {
+            throw std::runtime_error("p1 is not nullptr after move");
+        }
+        
+        if (p2.get() != nullptr) {
+            p_val = *(p2.release());
         }
 
-        int* x = p2.release(); // returns raw pointer and sets p2 to nullptr
+        p->doSomething();
 
-        if (p2.get() == nullptr) {
-            throw std::runtime_error("p2 is nullptr after move!");
-        }
+        std::cout << "Value: " << p_val << "\n";
+        return p_val;
 
-        // doing just 'return p2.get()' gives runtime error, however I would expect this to pass given the exception handling above
-        return p2.get() != nullptr ? 0 : 1;
-
-    } catch (const std::runtime_error& e) {
-        cout << "caught exception:" << e.what() << "\n";
-        return EXIT_FAILURE;
+    }
+    catch (...) {
+        std::cerr << "unknown exception\n";
     }
 
-    // TODO: why p1 gets deleted at at_exit()?
 }
