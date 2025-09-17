@@ -59,8 +59,8 @@ public:
 
 private:
   static void default_delete(T *p) { delete p; }
-  T *m_ptr = nullptr;
-  DeleterType m_deleter = nullptr;
+  T *m_ptr;
+  DeleterType m_deleter;
 };
 
 // note: C style function as deleter
