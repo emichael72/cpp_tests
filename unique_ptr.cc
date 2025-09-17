@@ -2,18 +2,17 @@
 // dynamically allocated object of type T. clang-format WebKit style
 
 #include <iostream>
+#include <memory>
 
-// note: custom deleter
-template <typename T> class UniquePtr {
+typedef void (*DeleterFunc)(int *);
+
+// deleter template
+template <typename T, typename DeleterType = std::default_delete<T>>
+
+class UniquePtr {
 public:
-  // note: callable signature void(func(void))
-
-  using DeleterType = void (*)(T *);
-
-  explicit UniquePtr(T *p = nullptr, DeleterType d = nullptr)
-      : m_ptr(p), m_deleter(nullptr) {
-    m_deleter = d ? d : &UniquePtr::default_delete;
-  }
+  explicit UniquePtr(T *p = nullptr, DeleterType d = DeleterType{})
+      : m_ptr(p), m_deleter(d) {}
 
   ~UniquePtr() { reset(); }
 
@@ -21,18 +20,16 @@ public:
   UniquePtr &operator=(const UniquePtr &) = delete;
 
   UniquePtr(UniquePtr &&other) noexcept
-      : m_ptr(other.m_ptr), m_deleter(other.m_deleter) {
+      : m_ptr(other.m_ptr), m_deleter(std::move(other.m_deleter)) {
     other.m_ptr = nullptr;
-    other.m_deleter = nullptr;
   }
 
   UniquePtr &operator=(UniquePtr &&other) noexcept {
     if (this != &other) {
       reset();
       m_ptr = other.m_ptr;
-      m_deleter = other.m_deleter;
+      m_deleter = std::move(other.m_deleter);
       other.m_ptr = nullptr;
-      other.m_deleter = nullptr;
     }
     return *this;
   }
@@ -47,8 +44,9 @@ public:
   }
 
   // note: delete current and take ownership of new ptr
+
   void reset(T *p = nullptr) {
-    if (m_ptr && m_deleter) {
+    if (m_ptr) {
       m_deleter(m_ptr);
     }
     m_ptr = p;
@@ -58,7 +56,7 @@ public:
   T *operator->() const { return m_ptr; }
 
 private:
-  static void default_delete(T *p) { delete p; }
+  // static default_delete is no longer needed; use DeleterType
   T *m_ptr;
   DeleterType m_deleter;
 };
@@ -75,7 +73,13 @@ int main() {
     UniquePtr<int> p1(new int(42));
     int p2_val = 0;
 
+    std::cout << "p1 value: " << *p1.get() << "\n";
+
+    // note: move p1 to p2 (take ownership)
     UniquePtr<int> p2 = std::move(p1);
+
+    // *p2 = (*p1)++; // run time error
+    ++(*p2);
 
     if (p1.get() != nullptr) {
       throw std::runtime_error("p1 is not nullptr after move");
@@ -88,7 +92,7 @@ int main() {
     std::cout << "p2 value: " << p2_val << "\n";
 
     // note: Using a C-style function as a custom deleter
-    UniquePtr<int> p3(new int(++p2_val), my_delete);
+    UniquePtr<int, DeleterFunc> p3(new int(++p2_val), my_delete);
     std::cout << "p3 value: " << *p3 << "\n";
 
     return p2_val;
