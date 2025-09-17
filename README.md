@@ -1,2 +1,2 @@
 # cpp_tests
-Several test in C++
+Several tests in C++
