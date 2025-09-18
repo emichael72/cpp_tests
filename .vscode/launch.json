@@ -5,9 +5,9 @@
       "name": "Debug main.exe (CodeLLDB)",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/main.exe",
+      "program": "${workspaceFolder}/bin/main.exe",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Build with clang++"
+      "preLaunchTask": "Build with make"
     }
   ]
 }

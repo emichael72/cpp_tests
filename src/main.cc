@@ -1,6 +1,9 @@
+#include "iter.h"
 #include "shared_ptr.h"
 #include "unique_ptr.h"
 #include <iostream>
+#include <vector>
+
 
 typedef void (*DeleterFunc)(int *);
 
@@ -86,8 +89,25 @@ int test_unique_ptr() {
   }
 }
 
+int test_iter() {
+
+  int arr[3] = {10, 20, 30};
+
+  SimpleIterator<int> begin(arr);
+  SimpleIterator<int> end(arr + 3);
+
+  for (auto it = begin; it != end; ++it) {
+    std::cout << *it << " ";
+  }
+  std::cout << "\n";
+  return 0;
+}
+
 int main() {
-  int ret1 = test_unique_ptr();
-  int ret2 = test_shared_ptr();
-  return ret1 + ret2;
+
+ // int ret = test_unique_ptr();
+ // int ret = test_shared_ptr();
+  int ret = test_iter();
+
+  return ret;
 }
