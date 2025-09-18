@@ -1,2 +1,2 @@
-# C++ Test samples
-Several tests in C++
+# C++ Tests
+Several exercises in C++
