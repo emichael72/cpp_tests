@@ -1,3 +1,7 @@
+
+#ifndef ITER_H
+#define ITER_H
+
 #include <iostream>
 
 template <typename T>
@@ -23,3 +27,6 @@ public:
     bool operator==(const SimpleIterator& other) const { return ptr == other.ptr; }
     bool operator!=(const SimpleIterator& other) const { return ptr != other.ptr; }
 };
+
+
+#endif // ITER_H

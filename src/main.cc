@@ -1,6 +1,7 @@
 #include "iter.h"
 #include "shared_ptr.h"
 #include "unique_ptr.h"
+#include "container.h"
 #include <iostream>
 #include <vector>
 
@@ -103,11 +104,33 @@ int test_iter() {
   return 0;
 }
 
+
+int test_container()
+{
+    MiniContainer cont;
+    cont.add({"a", 85});
+    cont.add({"b", 92});
+    cont.add({"c", 78});
+    cont.add({"d", 95});
+    cont.add({"s", 88});
+
+
+    cont.print();
+
+    std::sort(cont.begin(), cont.end());
+
+    std::cout << "\nsorted:\n";
+    cont.print();
+
+    return 0;
+}
+
 int main() {
 
- // int ret = test_unique_ptr();
- // int ret = test_shared_ptr();
-  int ret = test_iter();
+  // int ret = test_unique_ptr();
+  // int ret = test_shared_ptr();
+  // int ret = test_iter();
+  int ret = test_container();
 
   return ret;
 }
