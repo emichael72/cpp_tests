@@ -1,2 +1,2 @@
-# cpp_tests
+# C++ Test samples
 Several tests in C++
