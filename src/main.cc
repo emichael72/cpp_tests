@@ -108,17 +108,14 @@ int test_iter() {
   return 0;
 }
 
+int test_container() {
 
-int test_container()
-{
     MiniContainer cont;
     cont.add({"a", 85});
     cont.add({"b", 92});
     cont.add({"c", 78});
     cont.add({"d", 95});
     cont.add({"s", 88});
-
-
     cont.print();
 
     std::sort(cont.begin(), cont.end());
@@ -131,7 +128,6 @@ int test_container()
 
 int test_str() {
 
-
   SimpleString s("hello world");
    for (size_t i = 0; i < s.size(); ++i) {
        std::cout << s[i];
@@ -139,18 +135,12 @@ int test_str() {
    std::cout << s.size() << "\n";   
    s[0] = 'Y'; 
    
-
-
-
   int ret = 0;
   return ret;
 }
 
+int test_vector() {
 
-
-
-int test_vector()
-{
     // Create a vector containing integers
     std::vector<int, NoHeapAllocator<int>> v = {8, 4, 5, 9};
  
@@ -174,24 +164,8 @@ int main() {
   // int ret = test_unique_ptr();
   // int ret = test_shared_ptr();
   // int ret = test_iter();
-<<<<<<< HEAD
   // int ret = test_container();
   // int ret = test_str();
   int ret = test_vector();
-=======
-  //int ret = test_container();
->>>>>>> 0bfb24565e2903f56837f02df7c533aa353fa79d
-
-  SimpleString s("hello world");
-   for (size_t i = 0; i < s.size(); ++i) {
-       std::cout << s[i];
-   }
-   std::cout << s.size() << "\n";   
-   s[0] = 'Y'; 
-   
-
-
-
-  int ret = 0;
   return ret;
 }
