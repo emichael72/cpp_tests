@@ -6,6 +6,13 @@
 #include <iostream>
 #include <algorithm> // for sort
 
+    template <typename T>
+    struct NoHeapAllocator {
+        using value_type = T;
+        T* allocate(std::size_t) { throw std::bad_alloc(); }
+        void deallocate(T*, std::size_t) noexcept {}
+    };
+    
 struct DataItem {
     std::string name;
     int dummy_int;
