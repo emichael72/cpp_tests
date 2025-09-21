@@ -130,7 +130,18 @@ int main() {
   // int ret = test_unique_ptr();
   // int ret = test_shared_ptr();
   // int ret = test_iter();
-  int ret = test_container();
+  //int ret = test_container();
 
+  SimpleString s("hello world");
+   for (size_t i = 0; i < s.size(); ++i) {
+       std::cout << s[i];
+   }
+   std::cout << s.size() << "\n";   
+   s[0] = 'Y'; 
+   
+
+
+
+  int ret = 0;
   return ret;
 }

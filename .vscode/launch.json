@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug main.exe (CodeLLDB)",
+      "name": "Debug main (CodeLLDB)",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/main.exe",
+      "program": "${workspaceFolder}/bin/main",
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build with make"
     }

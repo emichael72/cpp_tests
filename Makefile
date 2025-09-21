@@ -6,12 +6,25 @@ CXXFLAGS := -std=c++20 -g -Iinc
 SRC_DIR := src
 BIN_DIR := bin
 
+# Detect OS: Windows_NT or (default) Linux/Unix
+ifeq ($(OS),Windows_NT)
+  EXE_EXT := .exe
+  RM := rmdir /s /q
+  NULL := >nul 2>&1
+  MKDIR := if not exist $(BIN_DIR) mkdir $(BIN_DIR)
+else
+  EXE_EXT :=
+  RM := rm -rf
+  NULL := >/dev/null 2>&1
+  MKDIR := mkdir -p $(BIN_DIR)
+endif
+
 # Collect all .cc files from src/
 SRCS := $(wildcard $(SRC_DIR)/*.cc)
 OBJS := $(patsubst $(SRC_DIR)/%.cc,$(BIN_DIR)/%.o,$(SRCS))
 
 # Target executable
-TARGET := $(BIN_DIR)/main.exe
+TARGET := $(BIN_DIR)/main$(EXE_EXT)
 
 # Default rule
 all: $(TARGET)
@@ -26,10 +39,10 @@ $(BIN_DIR)/%.o: $(SRC_DIR)/%.cc | $(BIN_DIR)
 
 # Ensure bin directory exists
 $(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+	$(MKDIR)
 
 # Clean build artifacts
 clean:
-	@if exist $(BIN_DIR) rmdir /s /q $(BIN_DIR) >nul 2>&1
+	-$(RM) $(BIN_DIR) $(NULL)
 
 .PHONY: all clean
