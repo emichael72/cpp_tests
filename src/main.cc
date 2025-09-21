@@ -174,9 +174,24 @@ int main() {
   // int ret = test_unique_ptr();
   // int ret = test_shared_ptr();
   // int ret = test_iter();
+<<<<<<< HEAD
   // int ret = test_container();
   // int ret = test_str();
   int ret = test_vector();
+=======
+  //int ret = test_container();
+>>>>>>> 0bfb24565e2903f56837f02df7c533aa353fa79d
 
+  SimpleString s("hello world");
+   for (size_t i = 0; i < s.size(); ++i) {
+       std::cout << s[i];
+   }
+   std::cout << s.size() << "\n";   
+   s[0] = 'Y'; 
+   
+
+
+
+  int ret = 0;
   return ret;
 }
