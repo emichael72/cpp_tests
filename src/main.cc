@@ -1,33 +1,37 @@
 
 #define _CRT_SECURE_NO_WARNINGS
-
+#include <assert.h>
 #include "iter.h"
 #include "shared_ptr.h"
 #include "unique_ptr.h"
 #include "container.h"
 #include "str.h"
+#include "aloc.h"
 #include <iostream>
 #include <vector>
 
-
 typedef void (*DeleterFunc)(int *);
 
-struct dummy_object {
+struct dummy_object
+{
   char arr[34]; // dummy : just to see what happens when x isa not the first
   int x;
 };
 
 // note: C style function as deleter
-void my_delete(int *p) {
+void my_delete(int *p)
+{
   std::cout << "my_delete called\n";
   delete p;
 }
 
-int test_shared_ptr() {
+int test_shared_ptr()
+{
 
   std::cout << "\nTesting SharedPtr\n";
 
-  try {
+  try
+  {
 
     SharedPtr<dummy_object> p1(new dummy_object{.x = 42});
     std::cout << "p1->x value: " << p1->x << "\n";
@@ -48,18 +52,21 @@ int test_shared_ptr() {
     std::cout << "p3->x = " << p3->x << "\n";
 
     return p2.get()->x;
-
-  } catch (...) {
+  }
+  catch (...)
+  {
     std::cerr << "unknown exception\n";
     return -1;
   }
 }
 
-int test_unique_ptr() {
+int test_unique_ptr()
+{
 
   std::cout << "\nTesting UniquePtr\n";
 
-  try {
+  try
+  {
     // note: falling to default delete
     UniquePtr<int> p1(new int(42));
     int p2_val = 0;
@@ -72,11 +79,13 @@ int test_unique_ptr() {
     // *p2 = (*p1)++; // run time error
     ++(*p2);
 
-    if (p1.get() != nullptr) {
+    if (p1.get() != nullptr)
+    {
       throw std::runtime_error("p1 is not nullptr after move");
     }
 
-    if (p2.get() != nullptr) {
+    if (p2.get() != nullptr)
+    {
       p2_val = *(p2.release());
     }
 
@@ -87,83 +96,125 @@ int test_unique_ptr() {
     std::cout << "p3 value: " << *p3 << "\n";
 
     return p2_val;
-
-  } catch (...) {
+  }
+  catch (...)
+  {
     std::cerr << "unknown exception\n";
     return -1;
   }
 }
 
-int test_iter() {
+int test_iter()
+{
 
   int arr[3] = {10, 20, 30};
 
   SimpleIterator<int> begin(arr);
   SimpleIterator<int> end(arr + 3);
 
-  for (auto it = begin; it != end; ++it) {
+  for (auto it = begin; it != end; ++it)
+  {
     std::cout << *it << " ";
   }
   std::cout << "\n";
   return 0;
 }
 
-int test_container() {
+int test_container()
+{
 
-    MiniContainer cont;
-    cont.add({"a", 85});
-    cont.add({"b", 92});
-    cont.add({"c", 78});
-    cont.add({"d", 95});
-    cont.add({"s", 88});
-    cont.print();
+  MiniContainer cont;
+  cont.add({"a", 85});
+  cont.add({"b", 92});
+  cont.add({"c", 78});
+  cont.add({"d", 95});
+  cont.add({"s", 88});
+  cont.print();
 
-    std::sort(cont.begin(), cont.end());
+  std::sort(cont.begin(), cont.end());
 
-    std::cout << "\nsorted:\n";
-    cont.print();
+  std::cout << "\nsorted:\n";
+  cont.print();
 
-    return 0;
+  return 0;
 }
 
-int test_str() {
+int test_str()
+{
 
-  SimpleString s("hello world");
-   for (size_t i = 0; i < s.size(); ++i) {
-       std::cout << s[i];
-   }
-   std::cout << s.size() << "\n";   
-   s[0] = 'Y'; 
-   
-  int ret = 0;
-  return ret;
+  String s1("abcd");
+  assert(s1.size() == 4);
+  String s2;
+  assert(s2.size() == 0);
+  s2 = s1;
+  assert(s1 == s2);
+  s1[0] = '1';
+  assert(s1 != s2);
+  assert(s1 == "1bcd");
+  String sub = s1.substr(1, 2); // take 2 symbols beginning from position 1
+  assert(sub == "bc");
+  String s3 = std::move(s1);
+  assert(s3 == "1bcd");
+  assert(s1 == "");
+  const String s4("qwerty");
+  [[maybe_unused]] char c = s4[1];
+
+  return 0;
 }
 
-int test_vector() {
+int ref_is_ptr(void)
+{
+  // changing ref to an int by its pointer 
+  int n = 42;
+  int &ref = n;
 
+  int *p = reinterpret_cast<int *>(&ref);
+  *p = 99;
 
-    std::vector<int, NoHeapAllocator<int>> v = {8, 4, 5, 9};
- 
-    v.push_back(6);
-    v.push_back(9);
- 
-    v[2] = -1;
- 
-    // Print out the vector
-    for (int n : v)
-        std::cout << n << ' ';
-    std::cout << '\n';
-    return 0;
+  std::cout << n << "\n";
+
+  return 0;
 }
 
+int test_ref(void)
+{
+  
+  int x = 10;
+  int* p = &x;
+  int*& rp = p;    // alias to the pointer
 
-int main() {
+  *rp = 4;
+
+  return 0;
+}
+
+int test_vector()
+{
+  BoundedAllocator<int> allocator(100); // Allow up to 100 bytes of allocation
+  std::vector<int, BoundedAllocator<int>> v({8, 4, 5, 9}, allocator);
+
+  v.push_back(6);
+  v.push_back(9);
+
+  v[2] = -1;
+
+  // Print out the vector
+  for (int n : v)
+    std::cout << n << ' ';
+  std::cout << '\n';
+  return 0;
+}
+
+int main()
+{
 
   // int ret = test_unique_ptr();
   // int ret = test_shared_ptr();
   // int ret = test_iter();
   // int ret = test_container();
   // int ret = test_str();
-  int ret = test_vector();
+  // int ret = test_vector();
+  // int ret = ref_is_ptr();
+  int ret = test_ref();
   return ret;
 }
