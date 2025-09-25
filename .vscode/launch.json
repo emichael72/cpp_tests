@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/bin/main",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Build with make"
+      "preLaunchTask": "Build with make",
     }
   ]
 }

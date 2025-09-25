@@ -1,7 +1,9 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <assert.h>
+#include <bits/stdc++.h>
 #include "iter.h"
+#include "vect.h"
 #include "shared_ptr.h"
 #include "unique_ptr.h"
 #include "container.h"
@@ -156,15 +158,51 @@ int test_str()
   String s3 = std::move(s1);
   assert(s3 == "1bcd");
   assert(s1 == "");
-  const String s4("qwerty");
-  [[maybe_unused]] char c = s4[1];
+
+  return 0;
+}
+
+int test_vec()
+{
+  Vector<int> v1;
+
+  v1.reserve(16);
+  assert(v1.size() == 0);
+  assert(v1.capacity() == 16);
+
+  v1.push_back(10);
+  int x = v1.pop_back();
+
+  v1.push_back(10);
+  v1.push_back(20);
+  v1.push_back(30);
+  assert(v1.size() == 3);
+
+  assert(v1[0] == 10 && v1[1] == 20 && v1[2] == 30);
+
+  Vector<int> v2 = v1; // copy
+  assert(v2 == v1);
+
+  v2[0] = 99;
+  assert(v2 != v1);
+
+  Vector<int> v3 = std::move(v1); // move
+  assert(v3.size() == 3);
+  assert(v1.size() == 0); // moved-from vector is empty but valid
+
+  v3.push_back(42);
+  assert(v3.size() == 4);
+
+ for (int *it = v3.begin(); it != v3.end(); ++it) {
+        std::cout << *it << " ";
+    }
 
   return 0;
 }
 
 int ref_is_ptr(void)
 {
-  // changing ref to an int by its pointer 
+  // changing ref to an int by its pointer
   int n = 42;
   int &ref = n;
 
@@ -178,10 +216,10 @@ int ref_is_ptr(void)
 
 int test_ref(void)
 {
-  
+
   int x = 10;
-  int* p = &x;
-  int*& rp = p;    // alias to the pointer
+  int *p = &x;
+  int *&rp = p; // alias to the pointer
 
   *rp = 4;
 
@@ -207,6 +245,7 @@ int test_vector()
 
 int main()
 {
+  std::cout << "Test start\n";
 
   // int ret = test_unique_ptr();
   // int ret = test_shared_ptr();
@@ -215,6 +254,9 @@ int main()
   // int ret = test_str();
   // int ret = test_vector();
   // int ret = ref_is_ptr();
-  int ret = test_ref();
+  // int ret = test_ref();
+  int ret = test_vec();
+
+  std::cout << "\nTest end\n";
   return ret;
 }
