@@ -1,0 +1,126 @@
+Values
+
+------------------------------------------------------------
+THE MAP
+------------------------------------------------------------
+Every expression in C++ has one value category:
+
+               glvalue  (has identity: refers to a specific object)
+               /     \
+          lvalue     xvalue
+                       \
+                        (expiring object; typically movable-from)
+
+               rvalue  (no stable identity)
+               /    \
+          prvalue   xvalue
+
+Quick intuition:
+- lvalue  : “has a name / addressable / stick-around object”
+- prvalue : “pure temporary value (a computed result)”
+- xvalue  : “an object that is about to be reused/moved”
+
+
+------------------------------------------------------------
+Simplified
+------------------------------------------------------------
+lvalue  — Refers to a specific, addressable object or function.
+          You can usually take its address (&), assign to it, pass by T&.
+          Examples: named variables, *p, a[i], std::cout, function returning T&.
+
+prvalue — “Pure rvalue”. A temporary value produced by an expression.
+          No stable identity. Examples: 1, 3.14, a+b, T(), function returning T.
+
+xvalue  — “eXpiring” glvalue. Refers to a real object whose resources may be moved.
+          Examples: std::move(obj), function returning T&&.
+
+glvalue — Any expression that refers to a specific object (lvalue or xvalue).
+
+rvalue  — Any expression that is not an lvalue (i.e., prvalue or xvalue).
+
+
+------------------------------------------------------------
+COMMON EXAMPLES
+------------------------------------------------------------
+int a = 3, b = 4;     // a, b are lvalues. 3 and 4 are prvalues.
+
+int c = a + b;        // (a + b) is a prvalue (temporary int)
+int d = (a - b);      // prvalue
+int e = a * 2;        // prvalue
+
+int* p = &a;          // &a is allowed: a is an lvalue
+// int* q = &(a + b); // error: cannot take address of a prvalue
+
+std::string s = "hi"; // "hi" is a string literal (lvalue array of const char[N])
+                      // s is an lvalue; the expression std::string("hi") would be a prvalue
+
+// Functions and return types:
+std::string   f();    // calling f() yields a prvalue
+std::string&  g();    // calling g() yields an lvalue
+std::string&& h();    // calling h() yields an xvalue
+
+std::string make() {
+    return std::string("abc");  
+    // returns a prvalue. Since C++17, the result is materialized directly
+    // in the caller (mandatory copy elision in this pattern).
+}
+
+int x = 12;
+double y = static_cast<double>(x); // prvalue temporary double used to initialize y
+int i = int(3.14);                 // prvalue from functional cast
+
+
+------------------------------------------------------------
+HOW TO “FORCE” A CATEGORY
+------------------------------------------------------------
+// Given T t; (where t is an lvalue)
+std::move(t)            -> xvalue
+static_cast<T&&>(t)     -> xvalue
+static_cast<T>(t)       -> prvalue (creates a temporary by value)
+
+// Binding rules:
+T&          binds to lvalues only
+const T&    binds to lvalues and rvalues (prvalue/xvalue)
+T&&         binds to rvalues (prvalue/xvalue)
+
+Note: unary & requires an lvalue. 
+- &f() is ill-formed if f returns by value (prvalue).
+- &std::move(t) is ill-formed (xvalue is not an lvalue).
+
+
+------------------------------------------------------------
+WHY IT MATTERS (BEHAVIORAL CONSEQUENCES)
+------------------------------------------------------------
+1) Overload resolution:
+   void take(const T&);   // accepts anything (lvalue or rvalue)
+   void take(T&&);        // prefers rvalues (prvalue/xvalue)
+
+   T obj{};
+   take(obj);             // calls const T& overload (obj is lvalue)
+   take(std::move(obj));  // calls T&& overload (xvalue), enabling moves
+
+2) Moves vs copies:
+   Passing/returning rvalues enables move construction/assignment when available.
+   Passing lvalues uses copy (unless explicitly moved).
+
+3) Return type signals category:
+   - return T;    -> caller gets a prvalue
+   - return T&;   -> caller gets an lvalue reference (alias to existing object)
+   - return T&&;  -> caller gets an xvalue (rare; use with care)
+
+4) C++17 elision:
+   Returning a prvalue like `return T(...);` materializes directly at the destination
+   (no extra copy/move), which is why “return by value” is idiomatic and efficient.
+
+
+------------------------------------------------------------
+SMALL CHEAT SHEET
+------------------------------------------------------------
+lvalue   : named variables, *ptr, a[i], function returning T&, std::cout
+prvalue  : 1, 3.14, a+b, T(), static_cast<U>(expr), function returning T
+xvalue   : std::move(x), function returning T&&
+glvalue  : lvalue or xvalue (has identity)
+rvalue   : prvalue or xvalue (not an lvalue)
+
+Footnote: Numeric/char/bool literals are prvalues. 
+          String literals are lvalues of type "array of const char[N]" (they often decay to const char*).

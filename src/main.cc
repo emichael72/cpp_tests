@@ -2,6 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <assert.h>
 #include <bits/stdc++.h>
+#include "trace.h"
 #include "iter.h"
 #include "vect.h"
 #include "shared_ptr.h"
@@ -11,6 +12,74 @@
 #include "aloc.h"
 #include <iostream>
 #include <vector>
+
+#define TRACE_FUNCTION() Trace trace(__func__)
+
+///////////////////////////////////////////////////
+//
+//  @brief
+//    Special and Partial Template Specialization
+//
+///////////////////////////////////////////////////
+
+template <typename T>
+T max_value(T a, T b)
+{
+  return (a > b) ? a : b;
+}
+
+// Specialization for const char*
+template <>
+const char *max_value(const char *a, const char *b)
+{
+  return std::strcmp(a, b) > 0 ? a : b;
+}
+
+// partial
+template <typename T>
+class Box
+{
+  T value;
+
+public:
+  Box(T v) : value(v) {}
+  T get() const { return value; }
+};
+
+// Partial specialization for pointer types
+template <typename T>
+class Box<T *>
+{
+  T *ptr;
+
+public:
+  Box(T *p) : ptr(p) {}
+  T &get() const { return *ptr; }
+};
+
+int test_special_templates()
+{
+
+  TRACE_FUNCTION();
+
+  // std::cout << max_value(3, 7) << "\n";        // generic
+  // std::cout << max_value("hi", "bye") << "\n"; // specialized
+
+  // partial
+  Box<int> b1(42);               // stores an int
+  Box<int *> b2(new int(7));     // stores pointer, dereferences on get()
+  std::cout << b1.get() << "\n"; // Outputs: 42
+  std::cout << b2.get() << "\n"; // Outputs: 7
+
+  return 0;
+}
+
+///////////////////////////////////////////////////
+//
+// @brief
+//   Smart Pointers
+//
+///////////////////////////////////////////////////
 
 typedef void (*DeleterFunc)(int *);
 
@@ -30,7 +99,7 @@ void my_delete(int *p)
 int test_shared_ptr()
 {
 
-  std::cout << "\nTesting SharedPtr\n";
+  TRACE_FUNCTION();
 
   try
   {
@@ -65,7 +134,7 @@ int test_shared_ptr()
 int test_unique_ptr()
 {
 
-  std::cout << "\nTesting UniquePtr\n";
+  TRACE_FUNCTION();
 
   try
   {
@@ -106,8 +175,17 @@ int test_unique_ptr()
   }
 }
 
+///////////////////////////////////////////////////
+//
+// @brief
+//  Iterators and Containers
+//
+///////////////////////////////////////////////////
+
 int test_iter()
 {
+
+  TRACE_FUNCTION();
 
   int arr[3] = {10, 20, 30};
 
@@ -125,6 +203,8 @@ int test_iter()
 int test_container()
 {
 
+  TRACE_FUNCTION();
+
   MiniContainer cont;
   cont.add({"a", 85});
   cont.add({"b", 92});
@@ -141,8 +221,17 @@ int test_container()
   return 0;
 }
 
+///////////////////////////////////////////////////
+//
+// @brief
+//  String class
+//
+///////////////////////////////////////////////////
+
 int test_str()
 {
+
+  TRACE_FUNCTION();
 
   String s1("abcd");
   assert(s1.size() == 4);
@@ -162,8 +251,18 @@ int test_str()
   return 0;
 }
 
+///////////////////////////////////////////////////
+//
+// @brief
+//  Vector class
+//
+///////////////////////////////////////////////////
+
 int test_vec()
 {
+
+  TRACE_FUNCTION();
+
   Vector<int> v1;
 
   v1.reserve(16);
@@ -193,41 +292,26 @@ int test_vec()
   v3.push_back(42);
   assert(v3.size() == 4);
 
- for (int *it = v3.begin(); it != v3.end(); ++it) {
-        std::cout << *it << " ";
-    }
+  for (int *it = v3.begin(); it != v3.end(); ++it)
+  {
+    std::cout << *it << " ";
+  }
 
   return 0;
 }
 
-int ref_is_ptr(void)
-{
-  // changing ref to an int by its pointer
-  int n = 42;
-  int &ref = n;
+///////////////////////////////////////////////////
+//
+// @brief
+//  Custom Allocator
+//
+///////////////////////////////////////////////////
 
-  int *p = reinterpret_cast<int *>(&ref);
-  *p = 99;
-
-  std::cout << n << "\n";
-
-  return 0;
-}
-
-int test_ref(void)
+int test_allocator()
 {
 
-  int x = 10;
-  int *p = &x;
-  int *&rp = p; // alias to the pointer
+  TRACE_FUNCTION();
 
-  *rp = 4;
-
-  return 0;
-}
-
-int test_vector()
-{
   BoundedAllocator<int> allocator(100); // Allow up to 100 bytes of allocation
   std::vector<int, BoundedAllocator<int>> v({8, 4, 5, 9}, allocator);
 
@@ -243,41 +327,79 @@ int test_vector()
   return 0;
 }
 
-int ref_basics_test(void)
+///////////////////////////////////////////////////
+//
+// @brief
+//  References and Rvalue References
+//
+///////////////////////////////////////////////////
+
+int test_values_and_refs(void)
 {
-  
-  /* 
+
+  TRACE_FUNCTION();
+
+  /*
   int a = 10;
   int *p = &a;
   int &a_ref = a;
   int *&ref_p = p;
   */
-  using ref_type = int&;
+  using ref_type = int &;
 
   ref_type &a_ref = *(new int(10));
-  ref_type &&b_ref = a_ref; 
+  ref_type &&b_ref = a_ref;
 
-  int &&x = 5;// something like:  int _tmp = 5 ; int &x = _tmp;
+  int &&x = 5; // something like:  int _tmp = 5 ; int &x = _tmp;
   x = 9;
 
   return 0;
 }
 
+///////////////////////////////////////////////////
+//
+// @brief
+//  Function Templates
+//
+///////////////////////////////////////////////////
+
+template <typename T>
+T add_things(T a, T b)
+{
+  return (a + b);
+}
+
+int test_func_template()
+{
+
+  TRACE_FUNCTION();
+  auto x = add_things(3, 4);
+  return x;
+}
+
+///////////////////////////////////////////////////
+//
+// @brief
+//  Main
+//
+///////////////////////////////////////////////////
 
 int main()
 {
   std::cout << "Test start\n";
+  int ret = 0;
 
-  // int ret = test_unique_ptr();
-  // int ret = test_shared_ptr();
-  // int ret = test_iter();
-  // int ret = test_container();
-  // int ret = test_str();
-  // int ret = test_vector();
-  // int ret = ref_is_ptr();
-  // int ret = test_ref();
-  // int ret = test_vec();
-  int ret = ref_basics_test ();
+  ret |= test_unique_ptr();
+  ret |= test_shared_ptr();
+  ret |= test_iter();
+  ret |= test_container();
+  ret |= test_str();
+  ret |= test_allocator();
+  ret |= test_vec();
+  ret |= test_values_and_refs();
+  ret |= test_func_template();
+
+  ret |= test_special_templates();
 
   std::cout << "\nTest end\n";
   return ret;

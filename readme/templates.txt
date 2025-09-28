@@ -1,0 +1,55 @@
+Class Templates in C++
+
+A class template lets you define a generic class once, and the compiler generates type-specific versions when needed.
+
+------------------------------------------------------------
+1. Basic Class Template
+------------------------------------------------------------
+template <typename T>
+class Box {
+    T value;
+public:
+    Box(T v) : value(v) {}
+    T get() const { return value; }
+    void set(T v) { value = v; }
+};
+
+// Usage
+Box<int> bi(42);
+Box<std::string> bs("hello");
+
+------------------------------------------------------------
+2. Multiple Template Parameters
+------------------------------------------------------------
+template <typename T, typename U>
+class Pair {
+    T first;
+    U second;
+public:
+    Pair(T f, U s) : first(f), second(s) {}
+    T get_first() const { return first; }
+    U get_second() const { return second; }
+};
+
+// Usage
+Pair<int, double> p(3, 3.14);
+
+------------------------------------------------------------
+3. Default Template Arguments
+------------------------------------------------------------
+template <typename T = int>
+class Holder {
+    T data;
+public:
+    Holder(T d = 0) : data(d) {}
+    T get() const { return data; }
+};
+
+// Usage
+Holder<> h1;        // T defaults to int
+Holder<double> h2(3.14);
+
+------------------------------------------------------------
+Notes:
+- Each instantiation (Box<int>, Box<std::string>) is a distinct class.
+- Templates are the basis of STL containers (std::vector<T>, std::map<Key,Value>, etc.).
