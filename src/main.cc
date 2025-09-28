@@ -258,10 +258,8 @@ int ref_basics_test(void)
   ref_type &&b_ref = a_ref; 
 
 
-  int &&x = 5;// temporary object pointing to rvalue 5
+  int &&x = 5;// something like:  int _tmp = 5 ; int &x = _tmp;
   x = 9;
-
-
 
   return 0;
 }
