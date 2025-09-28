@@ -243,6 +243,30 @@ int test_vector()
   return 0;
 }
 
+int ref_basics_test(void)
+{
+  
+  /* 
+  int a = 10;
+  int *p = &a;
+  int &a_ref = a;
+  int *&ref_p = p;
+  */
+  using ref_type = int&;
+
+  ref_type &a_ref = *(new int(10));
+  ref_type &&b_ref = a_ref; 
+
+
+  int &&x = 5;// temporary object pointing to rvalue 5
+  x = 9;
+
+
+
+  return 0;
+}
+
+
 int main()
 {
   std::cout << "Test start\n";
@@ -255,7 +279,8 @@ int main()
   // int ret = test_vector();
   // int ret = ref_is_ptr();
   // int ret = test_ref();
-  int ret = test_vec();
+  // int ret = test_vec();
+  int ret = ref_basics_test ();
 
   std::cout << "\nTest end\n";
   return ret;
