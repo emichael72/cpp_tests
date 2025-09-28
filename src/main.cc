@@ -257,7 +257,6 @@ int ref_basics_test(void)
   ref_type &a_ref = *(new int(10));
   ref_type &&b_ref = a_ref; 
 
-
   int &&x = 5;// something like:  int _tmp = 5 ; int &x = _tmp;
   x = 9;
 
