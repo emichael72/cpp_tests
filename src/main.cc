@@ -1,5 +1,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS
+
 #include <assert.h>
 #include <bits/stdc++.h>
 #include "trace.h"
@@ -135,7 +136,6 @@ int test_unique_ptr()
 {
 
   TRACE_FUNCTION();
-
   try
   {
     // note: falling to default delete
@@ -345,8 +345,10 @@ int test_values_and_refs(void)
   int &a_ref = a;
   int *&ref_p = p;
   */
-  using ref_type = int &;
 
+  using ref_type = int &;
+  
+  // colupsing to int&
   ref_type &a_ref = *(new int(10));
   ref_type &&b_ref = a_ref;
 
@@ -380,6 +382,38 @@ int test_func_template()
 ///////////////////////////////////////////////////
 //
 // @brief
+//  Materialized prvalue
+//
+///////////////////////////////////////////////////
+
+class ArbitraryClass
+{
+public:
+    ArbitraryClass(int x, int y)
+    { m_val = x + y; }
+
+    ~ArbitraryClass() = default;
+    int get_val() const { return m_val; }
+
+private:
+    int m_val = 0;
+};
+
+ArbitraryClass make_class() // <- Warning: black magic ahead
+{ 
+  return ArbitraryClass(1,1); // retrunning prvalue.
+  // C++17, the returned object is "materialized" directly in the caller's stack frame
+}
+
+int test_materialized_prval()
+{
+  // temporary object is created in the caller's stack frame 
+  return make_class().get_val();
+}
+
+///////////////////////////////////////////////////
+//
+// @brief
 //  Main
 //
 ///////////////////////////////////////////////////
@@ -398,6 +432,7 @@ int main()
   ret |= test_vec();
   ret |= test_values_and_refs();
   ret |= test_func_template();
+  ret |= test_materialized_prval();
 
   ret |= test_special_templates();
 

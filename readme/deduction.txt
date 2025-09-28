@@ -1,0 +1,99 @@
+C++ TYPE DEDUCTION RULES
+
+Terminology
+Top-level const/volatile (cv) applies to the object itself (example: const int x).
+Low-level const applies through a pointer or reference (example: const int* p).
+Deduce T means what the compiler infers for the template parameter T or for auto.
+
+1) Parameter is T (by value = copy = we can modify = const can be dropped )
+template <typename T> void f(T x);
+Top-level const of the argument is dropped.
+Low-level const through pointers is preserved.
+Examples:
+  int i; const int ci = 0; const int* pc = &ci;
+  f(i);    // T = int
+  f(ci);   // T = int
+  f(pc);   // T = const int*
+
+2) Parameter is T& (alias = exact match)
+template <typename T> void f(T& x);
+T keeps const or volatile qualifiers of the argument.
+Examples:
+  int i; const int ci = 0;
+  f(i);   // T = int
+  f(ci);  // T = const int
+
+3) Parameter is const T& (redundant "const" = already defined by the template)
+template <typename T> void f(const T& x);
+During deduction, top-level const of the argument is ignored.
+Examples:
+  int i; const int ci = 0;
+  f(i);   // T = int
+  f(ci);  // T = int
+
+4) Parameter is T* (T is a pointer, must retain what the pointer is )
+template <typename T> void f(T* p);
+T is the pointed-to type, low-level const is preserved.
+Examples:
+  int i; const int ci = 0;
+  f(&i);   // T = int
+  f(&ci);  // T = const int
+
+5) Forwarding references T&&
+template <typename T> void f(T&& x);
+If argument is lvalue then T deduces to an lvalue reference and reference collapsing applies.
+If argument is rvalue then T deduces to the plain type.
+Reference collapsing rules:
+  & + &   becomes &
+  & + &&  becomes &
+  && + &  becomes &
+  && + && becomes &&
+Examples:
+  int i; const int ci = 0;
+  f(i);   // T = int&, parameter type int&
+  f(ci);  // T = const int&, parameter type const int&
+  f(42);  // T = int, parameter type int&& (temp objet created and we get a lvalue )
+
+6) Arrays and functions
+By value parameter (T): arrays and functions decay to pointers.
+By reference parameter (T&): no decay, true type is preserved.
+Examples:
+  char arr[10];
+  template <typename T> void f(T x);  f(arr); // T = char*
+  template <typename T> void g(T& x); g(arr); // T = char[10]
+
+7) auto deduction
+auto follows the same rules as template T by value.
+Examples:
+  int i = 0; const int ci = 0; const int* pci = &ci;
+  auto x = i;    // int
+  auto y = ci;   // int
+  auto z = pci;  // const int*
+
+8) auto with references and cv
+The declarator controls reference and const, not the initializer.
+Examples:
+  const int ci = 0;
+  auto&  r1 = ci;    // const int&
+  auto&& r2 = ci;    // const int&
+  auto&& r3 = 5;     // int&&
+  const auto v = ci; // const int
+
+9) decltype(auto)
+decltype(auto) uses decltype rules of the initializer expression.
+It can preserve references and exact value category.
+Difference from auto: auto strips top-level const and references, decltype(auto) does not.
+
+10) Initializer lists
+auto x = {1,2,3};   // std::initializer_list<int>
+auto x{1};          // int (since C++17)
+Rule of thumb: use = { } if you want initializer_list.
+
+11) Quick summary
+T by value: top-level const dropped.
+T&: preserves argument’s type including cv.
+const T&: top-level const dropped but parameter is still const reference.
+T*: pointer element type deduced, low-level const preserved.
+T&&: forwarding reference, lvalue makes T an lvalue reference.
+auto: same rules as template T by value.
+decltype(auto): preserves exact expression type.
