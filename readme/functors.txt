@@ -1,0 +1,40 @@
+In C++, a functor (also called a function object) is any class or struct that overloads the operator() 
+function call operator. Objects of such classes can be used with the same syntax as ordinary functions. 
+Unlike plain function pointers, functors can also store state.
+
+Note: 
+    1. anything you can execute (that has () ) is a callable.
+    2. famous example: for_each()
+
+
+Functors are widely used in the C++ Standard Library, for example as custom comparators in std::sort, or 
+predefined ones such as std::plus and std::less from <functional>.
+
+Example of a custom functor:
+
+struct Adder {
+    int operator()(int a, int b) const {
+        return a + b;
+    }
+};
+
+Adder add;
+int result = add(2, 3); // behaves like a function call, result = 5
+
+Example of a stateful functor:
+
+struct Counter {
+    int value = 0;
+    int operator()() { return ++value; }
+};
+
+Counter c;
+int a = c(); // 1
+int b = c(); // 2
+int c_val = c(); // 3
+
+Summary:
+- Any class that defines operator() is a functor.
+- Functors can be passed where functions are expected.
+- They can hold state, which makes them more flexible than raw function pointers.
+- Modern C++ lambdas are essentially compiler-generated functor objects.

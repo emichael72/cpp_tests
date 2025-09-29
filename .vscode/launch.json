@@ -5,7 +5,8 @@
       "name": "Debug main (CodeLLDB)",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/main",
+      "program": "${workspaceFolder}/bin/cpp_tests",
+      "args": ["-a"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build with make",
     }

@@ -1,0 +1,38 @@
+Operator overloading in C++
+
+C++ allows redefining the behavior of operators (like +, -, ==, []) for user-defined types. 
+This makes objects of a class behave more like built-in types.
+
+Example:
+
+#include <iostream>
+using namespace std;
+
+class Vector {
+    int x, y;
+public:
+    Vector(int a=0, int b=0) : x(a), y(b) {}
+
+    // overload +
+    Vector operator+(const Vector& other) const {
+        return Vector(x + other.x, y + other.y);
+    }
+
+    // overload ==
+    bool operator==(const Vector& other) const {
+        return (x == other.x && y == other.y);
+    }
+
+    // overload <<
+    friend ostream& operator<<(ostream& os, const Vector& v) {
+        os << "(" << v.x << "," << v.y << ")";
+        return os;
+    }
+};
+
+int main() {
+    Vector a(1,2), b(3,4);
+    Vector c = a + b;        // uses overloaded +
+    cout << c << endl;        // uses overloaded <<
+    cout << (a == b) << endl; // uses overloaded ==
+}
