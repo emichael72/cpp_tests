@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX := clang++
-CXXFLAGS := -std=c++20 -O0 -g -Iinc
+CXXFLAGS := -std=c++20 -O0 -g3 -Iinc
 
 # Source and output directories
 SRC_DIR := src

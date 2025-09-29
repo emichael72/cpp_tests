@@ -3,12 +3,24 @@
   "configurations": [
     {
       "name": "Debug main (CodeLLDB)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/cpp_tests",
+      "args": ["-a"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Build with make",
+      "miDebuggerPath": "/home/eitanm/.local/bin/gdb",
+      "stopAtEntry": false
+    },
+    {
+      "name": "Debug main (CodeLLDB_1)",
       "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/bin/cpp_tests",
       "args": ["-a"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build with make",
-    }
+    },
+  
   ]
 }

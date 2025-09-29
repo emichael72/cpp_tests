@@ -352,6 +352,7 @@ TEST_FUNC(materialized_prval) {
 }
 
 TEST_FUNC(single) {
+  
   auto &a = Singleton::instance();
   a.hello();
 

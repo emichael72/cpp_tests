@@ -27,7 +27,7 @@ public:
   }
 
 private:
-  Singleton() { std::cout << "Singleton constructed\n"; }
+  Singleton() :m_temp(42) { std::cout << "Singleton constructed\n"; }
 
   ~Singleton() { std::cout << "Singleton destroyed\n"; }
 
@@ -36,6 +36,8 @@ private:
   Singleton &operator=(const Singleton &) = delete;
   Singleton(Singleton &&) = delete;
   Singleton &operator=(Singleton &&) = delete;
+
+  const int m_temp;
 };
 
 // === Global accessor function ===
