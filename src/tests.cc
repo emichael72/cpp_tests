@@ -1,17 +1,17 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <bits/stdc++.h>
-#include "func_reg.h"
-#include "trace.h"
-#include "iter.h"
-#include "vect.h"
-#include "shared_ptr.h"
-#include "unique_ptr.h"
+#include "aloc.h"
 #include "container.h"
+#include "func_reg.h"
+#include "iter.h"
+#include "shared_ptr.h"
 #include "sngl_ton.h"
 #include "str.h"
-#include "aloc.h"
+#include "trace.h"
+#include "unique_ptr.h"
+#include "vect.h"
+#include <bits/stdc++.h>
 #include <iostream>
 #include <vector>
 
@@ -22,23 +22,15 @@
 //
 ///////////////////////////////////////////////////
 
-template <typename T>
-T max_value(T a, T b)
-{
-  return (a > b) ? a : b;
-}
+template <typename T> T max_value(T a, T b) { return (a > b) ? a : b; }
 
 // Specialization for const char*
-template <>
-const char *max_value(const char *a, const char *b)
-{
+template <> const char *max_value(const char *a, const char *b) {
   return std::strcmp(a, b) > 0 ? a : b;
 }
 
 // partial
-template <typename T>
-class Box
-{
+template <typename T> class Box {
   T value;
 
 public:
@@ -47,9 +39,7 @@ public:
 };
 
 // Partial specialization for pointer types
-template <typename T>
-class Box<T *>
-{
+template <typename T> class Box<T *> {
   T *ptr;
 
 public:
@@ -57,8 +47,7 @@ public:
   T &get() const { return *ptr; }
 };
 
-TEST_FUNC(special_templates)
-{
+TEST_FUNC(special_templates) {
 
   // std::cout << max_value(3, 7) << "\n";        // generic
   // std::cout << max_value("hi", "bye") << "\n"; // specialized
@@ -81,24 +70,20 @@ TEST_FUNC(special_templates)
 
 typedef void (*DeleterFunc)(int *);
 
-struct dummy_object
-{
+struct dummy_object {
   char arr[34]; // dummy : just to see what happens when x isa not the first
   int x;
 };
 
 // note: C style function as deleter
-void my_delete(int *p)
-{
+void my_delete(int *p) {
   std::cout << "my_delete called\n";
   delete p;
 }
 
-TEST_FUNC(shared_ptr)
-{
+TEST_FUNC(shared_ptr) {
 
-  try
-  {
+  try {
 
     SharedPtr<dummy_object> p1(new dummy_object{.x = 42});
     std::cout << "p1->x value: " << p1->x << "\n";
@@ -119,18 +104,14 @@ TEST_FUNC(shared_ptr)
     std::cout << "p3->x = " << p3->x << "\n";
 
     return p2.get()->x;
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cerr << "unknown exception\n";
     return -1;
   }
 }
 
-TEST_FUNC(unique_ptr)
-{
-  try
-  {
+TEST_FUNC(unique_ptr) {
+  try {
     // note: falling to default delete
     UniquePtr<int> p1(new int(42));
     int p2_val = 0;
@@ -143,13 +124,11 @@ TEST_FUNC(unique_ptr)
     // *p2 = (*p1)++; // run time error
     ++(*p2);
 
-    if (p1.get() != nullptr)
-    {
+    if (p1.get() != nullptr) {
       throw std::runtime_error("p1 is not nullptr after move");
     }
 
-    if (p2.get() != nullptr)
-    {
+    if (p2.get() != nullptr) {
       p2_val = *(p2.release());
     }
 
@@ -160,9 +139,7 @@ TEST_FUNC(unique_ptr)
     std::cout << "p3 value: " << *p3 << "\n";
 
     return p2_val;
-  }
-  catch (...)
-  {
+  } catch (...) {
     std::cerr << "unknown exception\n";
     return -1;
   }
@@ -175,24 +152,21 @@ TEST_FUNC(unique_ptr)
 //
 ///////////////////////////////////////////////////
 
-TEST_FUNC(iter)
-{
+TEST_FUNC(iter) {
 
   int arr[3] = {10, 20, 30};
 
   SimpleIterator<int> begin(arr);
   SimpleIterator<int> end(arr + 3);
 
-  for (auto it = begin; it != end; ++it)
-  {
+  for (auto it = begin; it != end; ++it) {
     std::cout << *it << " ";
   }
   std::cout << "\n";
   return 0;
 }
 
-TEST_FUNC(container)
-{
+TEST_FUNC(container) {
 
   MiniContainer cont;
   cont.add({"a", 85});
@@ -217,8 +191,7 @@ TEST_FUNC(container)
 //
 ///////////////////////////////////////////////////
 
-TEST_FUNC(str)
-{
+TEST_FUNC(str) {
 
   String s1("abcd");
   assert(s1.size() == 4);
@@ -245,8 +218,7 @@ TEST_FUNC(str)
 //
 ///////////////////////////////////////////////////
 
-TEST_FUNC(vec)
-{
+TEST_FUNC(vec) {
 
   Vector<int> v1;
 
@@ -276,8 +248,7 @@ TEST_FUNC(vec)
 
   v3.push_back(42);
   assert(v3.size() == 4);
-  for (int *it = v3.begin(); it != v3.end(); ++it)
-  {
+  for (int *it = v3.begin(); it != v3.end(); ++it) {
     std::cout << *it << " ";
   }
 
@@ -291,8 +262,7 @@ TEST_FUNC(vec)
 //
 ///////////////////////////////////////////////////
 
-TEST_FUNC(allocator)
-{
+TEST_FUNC(allocator) {
 
   BoundedAllocator<int> allocator(100); // Allow up to 100 bytes of allocation
   std::vector<int, BoundedAllocator<int>> v({8, 4, 5, 9}, allocator);
@@ -316,8 +286,7 @@ TEST_FUNC(allocator)
 //
 ///////////////////////////////////////////////////
 
-TEST_FUNC(values_and_refs)
-{
+TEST_FUNC(values_and_refs) {
   /*
   int a = 10;
   int *p = &a;
@@ -344,14 +313,9 @@ TEST_FUNC(values_and_refs)
 //
 ///////////////////////////////////////////////////
 
-template <typename T>
-T add_things(T a, T b)
-{
-  return (a + b);
-}
+template <typename T> T add_things(T a, T b) { return (a + b); }
 
-TEST_FUNC(func_template)
-{
+TEST_FUNC(func_template) {
 
   auto x = add_things(3, 4);
   return x;
@@ -364,13 +328,9 @@ TEST_FUNC(func_template)
 //
 ///////////////////////////////////////////////////
 
-class ArbitraryClass
-{
+class ArbitraryClass {
 public:
-  ArbitraryClass(int x, int y)
-  {
-    m_val = x + y;
-  }
+  ArbitraryClass(int x, int y) { m_val = x + y; }
 
   ~ArbitraryClass() = default;
   int get_val() const { return m_val; }
@@ -382,26 +342,24 @@ private:
 ArbitraryClass make_class() // <- Warning: black magic ahead
 {
   return ArbitraryClass(1, 1); // retrunning prvalue.
-  // C++17, the returned object is "materialized" directly in the caller's stack frame
+  // C++17, the returned object is "materialized" directly in the caller's stack
+  // frame
 }
 
-TEST_FUNC(materialized_prval)
-{
+TEST_FUNC(materialized_prval) {
   // temporary object is created in the caller's stack frame
   return make_class().get_val();
 }
 
-TEST_FUNC(single)
-{
-  auto& a = Singleton::instance();
+TEST_FUNC(single) {
+  auto &a = Singleton::instance();
   a.hello();
 
-  auto& b = get_global_singleton();
+  auto &b = get_global_singleton();
   b.hello();
 
-  Singleton* p = Singleton::create_on_heap();
+  Singleton *p = Singleton::create_on_heap();
   p->hello();
-  
-  return 0;
 
+  return 0;
 }

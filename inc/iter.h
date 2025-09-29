@@ -4,29 +4,31 @@
 
 #include <iostream>
 
-template <typename T>
-class SimpleIterator {
-    T* ptr;  // raw pointer to element
+template <typename T> class SimpleIterator {
+  T *ptr; // raw pointer to element
 public:
-    explicit SimpleIterator(T* p = nullptr) : ptr(p) {}
+  explicit SimpleIterator(T *p = nullptr) : ptr(p) {}
 
-    T& operator*() { return *ptr; }
+  T &operator*() { return *ptr; }
 
-    SimpleIterator& operator++() { 
-        ++ptr; 
-        return *this; 
-    }
+  SimpleIterator &operator++() {
+    ++ptr;
+    return *this;
+  }
 
-    SimpleIterator operator++(int) {
-        SimpleIterator tmp = *this;
-        ++ptr;
-        return tmp;
-    }
+  SimpleIterator operator++(int) {
+    SimpleIterator tmp = *this;
+    ++ptr;
+    return tmp;
+  }
 
-    // comparison
-    bool operator==(const SimpleIterator& other) const { return ptr == other.ptr; }
-    bool operator!=(const SimpleIterator& other) const { return ptr != other.ptr; }
+  // comparison
+  bool operator==(const SimpleIterator &other) const {
+    return ptr == other.ptr;
+  }
+  bool operator!=(const SimpleIterator &other) const {
+    return ptr != other.ptr;
+  }
 };
-
 
 #endif // ITER_H
