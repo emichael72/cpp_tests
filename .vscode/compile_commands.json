@@ -1,0 +1,50 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-c",
+      "-o",
+      "bin/free_style.o",
+      "src/free_style.cc"
+    ],
+    "directory": "/home/eitanm/projects/private/cpp_tests",
+    "file": "/home/eitanm/projects/private/cpp_tests/src/free_style.cc",
+    "output": "/home/eitanm/projects/private/cpp_tests/bin/free_style.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-c",
+      "-o",
+      "bin/main.o",
+      "src/main.cc"
+    ],
+    "directory": "/home/eitanm/projects/private/cpp_tests",
+    "file": "/home/eitanm/projects/private/cpp_tests/src/main.cc",
+    "output": "/home/eitanm/projects/private/cpp_tests/bin/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-c",
+      "-o",
+      "bin/tests.o",
+      "src/tests.cc"
+    ],
+    "directory": "/home/eitanm/projects/private/cpp_tests",
+    "file": "/home/eitanm/projects/private/cpp_tests/src/tests.cc",
+    "output": "/home/eitanm/projects/private/cpp_tests/bin/tests.o"
+  }
+]

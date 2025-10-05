@@ -10,6 +10,7 @@
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build with make",
       "miDebuggerPath": "/home/eitanm/.local/bin/gdb",
+      "miDebuggerArgs": "-q",
       "stopAtEntry": false
     },
     {

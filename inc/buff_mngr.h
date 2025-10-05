@@ -79,6 +79,6 @@ public:
     size_t size() const { return m_size; }
 
 private:
-    size_t m_size{};
+    size_t m_size{0};
     T *m_data{};
 };

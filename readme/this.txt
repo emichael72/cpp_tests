@@ -1,6 +1,7 @@
 In C++, every non-static member function of a class has access to a hidden pointer called "this". 
 It is an implicit parameter that points to the object for which the member function is currently being executed. 
-In other words, inside a member function, "this" refers to the instance that invoked that function. For example, if obj.method() is called, then inside method(), 
+In other words, inside a member function, "this" refers to the instance that invoked that function. For example, 
+if obj.method() is called, then inside method(), 
 "this" points to obj. The pointer type is "ClassName* const", and in a const member function it becomes "const ClassName* const".
 
 "this" is often used to disambiguate between member variables and parameters with the same name, for example:

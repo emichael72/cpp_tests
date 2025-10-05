@@ -4,7 +4,7 @@
     {
       "label": "Build with make",
       "type": "shell",
-      "command": "make",
+      "command": "bear --output .vscode/compile_commands.json -- make",
       "args": [],
       "options": {
         "cwd": "${workspaceFolder}"
