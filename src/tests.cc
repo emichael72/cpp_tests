@@ -1,6 +1,8 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
+#if __cplusplus >= 201703L
+
 #include "aloc.h"
 #include "container.h"
 #include "func_reg.h"
@@ -364,3 +366,6 @@ TEST_FUNC(single) {
 
   return 0;
 }
+
+
+#endif

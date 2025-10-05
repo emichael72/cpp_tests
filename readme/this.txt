@@ -1,0 +1,15 @@
+In C++, every non-static member function of a class has access to a hidden pointer called "this". 
+It is an implicit parameter that points to the object for which the member function is currently being executed. 
+In other words, inside a member function, "this" refers to the instance that invoked that function. For example, if obj.method() is called, then inside method(), 
+"this" points to obj. The pointer type is "ClassName* const", and in a const member function it becomes "const ClassName* const".
+
+"this" is often used to disambiguate between member variables and parameters with the same name, for example:
+
+MyClass(int value) { this->value = value; }
+
+
+It is also used when a function needs to return the current object, usually to allow method chaining (e.g., return *this;).
+
+You normally don't need to use "this" explicitly, since the compiler automatically knows which members belong to the current object. 
+It should not be used outside a non-static member function or before the object is fully constructed or after it is destroyed. 
+Accessing "this" in static methods or global functions is invalid because those functions do not operate on a specific object instance.

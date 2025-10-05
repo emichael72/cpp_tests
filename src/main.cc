@@ -1,4 +1,5 @@
-#include "func_reg.h"
+
+#include "free_style.h"
 #include <iostream>
 
 ///////////////////////////////////////////////////
@@ -9,6 +10,9 @@
 ///////////////////////////////////////////////////
 
 // Test runner
+#if __cplusplus >= 201703L
+#include "func_reg.h"
+
 void run_all_tests() {
 
   for (auto &[name, func] : FunctionRegistry::map()) {
@@ -62,17 +66,24 @@ void run_single_test(const std::string &name) {
               << "' threw unknown exception\033[0m\n";
   }
 }
+#endif
 
 void print_help(const char *progname) {
   std::cout << "Usage: " << progname << " [OPTIONS]\n"
             << "Options:\n"
+#if __cplusplus >= 201703L
             << "  -a, --all            Run all registered tests\n"
             << "  -t, --test <name>    Run a specific test by name\n"
+#endif
+            << "  -f, --free_style     Run 'free style' training code\n"
+            << "  -b, --buff           Run buff management tester\n"
             << "  -h, --help           Show this help message\n"
             << "\nAvailable tests:\n";
+#if __cplusplus >= 201703L
   for (auto &[name, _] : FunctionRegistry::map()) {
     std::cout << "  " << name << "\n";
   }
+#endif
 }
 
 int main(int argc, char **argv) {
@@ -82,6 +93,8 @@ int main(int argc, char **argv) {
   }
 
   std::string arg1 = argv[1];
+
+#if __cplusplus >= 201703L
   if (arg1 == "-a" || arg1 == "--all") {
     run_all_tests();
   } else if (arg1 == "-t" || arg1 == "--test") {
@@ -90,6 +103,15 @@ int main(int argc, char **argv) {
       return 1;
     }
     run_single_test(argv[2]);
+
+  } else if (arg1 == "-f" || arg1 == "--free_style") {
+    return class_tester();
+#else
+  if (arg1 == "-f" || arg1 == "--free_style") {
+    return class_tester();
+#endif
+  } else if (arg1 == "-b" || arg1 == "--buff") {
+    return buff_tester();
   } else if (arg1 == "-h" || arg1 == "--help") {
     print_help(argv[0]);
   } else {

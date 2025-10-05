@@ -1,5 +1,6 @@
 # Compiler and flags
 CXX := clang++
+CXX_STD := 20
 CXXFLAGS := -std=c++20 -O0 -g3 -Iinc
 
 # Source and output directories
@@ -38,7 +39,7 @@ $(TARGET): $(OBJS) | $(BIN_DIR)
 
 # Compile step for each .cc
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.cc | $(BIN_DIR)
-	@echo "Compiling $(notdir $<)"
+	@echo "$(notdir $<)"
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Ensure bin directory exists
@@ -46,15 +47,26 @@ $(BIN_DIR):
 	@echo
 	@-$(MKDIR)
 
+.PHONY: all clean run postbuild prebuild
+
+# Default top-level target
+all: clean $(TARGET)
+
+# Pre-build hook (runs once before any compilation)
+prebuild:
+	@echo "Compiling with C++ $(CXX_STD)"
+
+# Make every object depend on the prebuild step
+$(OBJS): | prebuild
+
+# Post-build hook (runs after link)
+postbuild:
+	@echo "Done."
+	@echo
+
 # Clean build artifacts
 clean:
 	@-$(RM) $(BIN_DIR) $(NULL)
-
-.PHONY: all clean run postbuild
-
-# Post build
-postbuild:
-	@echo "Done."
 
 # Run target: clean, build, run executable
 ARGS ?=

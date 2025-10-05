@@ -1,4 +1,7 @@
 {
+    // "launch.defaultConfigurationName": "Debug main (GDB)",
+    "launch.defaultConfigurationName": "Debug main (CodeLLDB)",
+
     "files.associations": {
         "memory": "cpp",
         "array": "cpp",

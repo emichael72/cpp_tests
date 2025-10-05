@@ -3,27 +3,24 @@
 class Singleton {
 public:
 
-  // Returns a reference to the single instance.
-  // Constructed once on first use, thread-safe since C++11.
+  // a reference to the single instance.
   static Singleton &instance() {
     static Singleton inst;
     return inst;
   }
 
-  // For APIs that expect a pointer. Still returns the *same* object
+  // when weexpect a pointer. still returns the *same* object
   // every time, not a new one.
   static Singleton *create_on_heap() { return &instance(); }
 
-  // Provides compatibility with a "global singleton" style, but internally
+  // compatibil with a "global singleton" , internally
   // just redirects to the same single instance.
   friend Singleton &get_global_singleton();
 
   void hello() { std::cout << "Singleton @" << this << "\n"; }
 
-  // Typically avoided, but provided for embedded environments where
-  // you might want to free resources deterministically.
   static void destroy_instance() {
-    // no-op in this design: instance() lives until program exit
+    // ?? when will this be processed on binary termination?
   }
 
 private:
@@ -31,7 +28,7 @@ private:
 
   ~Singleton() { std::cout << "Singleton destroyed\n"; }
 
-  // Prevent copy and move — strictly one object.
+  // prevent copy and move >> strictly one object.
   Singleton(const Singleton &) = delete;
   Singleton &operator=(const Singleton &) = delete;
   Singleton(Singleton &&) = delete;
@@ -40,7 +37,5 @@ private:
   const int m_temp;
 };
 
-// === Global accessor function ===
-// For compatibility with "static global" usage.
-// Redirects to the single Meyers' singleton instance.
+// redirects to singleton instance.
 Singleton &get_global_singleton() { return Singleton::instance(); }

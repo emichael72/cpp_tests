@@ -5,13 +5,6 @@ TEMPLATE SPECIALIZATION (C++)
 ------------------------------------------------------------
 When you want a template to behave *differently for one exact type*.
 
-TEMPLATE SPECIALIZATION (C++)
-
-------------------------------------------------------------
-1. FULL SPECIALIZATION
-------------------------------------------------------------
-When you want a template to behave *differently for one exact type*.
-
 template <typename T>
 class Printer {
 public:
@@ -59,9 +52,8 @@ std::cout << max_value("hi", "bye");       // specialized
 ------------------------------------------------------------
 3. PARTIAL SPECIALIZATION (CLASSES ONLY)
 ------------------------------------------------------------
-You cannot partially specialize function templates (only classes).
-This allows customizing for a *family of types*.
 
+This allows customizing for a <family> of types.
 Example: specialization for pointers
 
 template <typename T>

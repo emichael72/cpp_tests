@@ -2,18 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug main (CodeLLDB)",
+      "name": "Debug main (GDB)",
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/bin/cpp_tests",
-      "args": ["-a"],
+      "args": ["-b"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build with make",
       "miDebuggerPath": "/home/eitanm/.local/bin/gdb",
       "stopAtEntry": false
     },
     {
-      "name": "Debug main (CodeLLDB_1)",
+      "name": "Debug main (CodeLLDB)",
       "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/bin/cpp_tests",
