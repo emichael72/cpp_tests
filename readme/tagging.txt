@@ -1,0 +1,165 @@
+ACCESS TRAITS AND TAGGING (C++)
+
+The snippet below demonstrates how elegant C++ metaprogramming
+can replace many runtime checks and conditionals with purely compile-time
+logic. The cost is:
+
+>>> zero <<< at runtime.
+
+-----------------------------------------------------------------------------
+ORIGINAL CODE SNIPPET (verbatim)
+-----------------------------------------------------------------------------
+
+/// readable in essence (not write-only like fifo)
+struct readable {};
+
+/// readable by ldx instruction, i.e. by read() function
+struct direct_readable : readable {};
+
+struct writable {};
+
+struct drw : direct_readable, writable {};
+
+struct rw : readable, writable {};
+
+/// fully accessible locally, write-only remotely
+template <bool Local>
+using writable_locally_readable = std::conditional_t<Local, drw, `r`w>;
+
+-----------------------------------------------------------------------------
+HIGH-LEVEL OVERVIEW
+-----------------------------------------------------------------------------
+
+These empty structs serve as compile-time tags that describe what an object
+is capable of. They contain no data and no methods; they only exist so the
+compiler can distinguish between different categories of objects via
+inheritance or concepts.
+
+    struct readable {};                     // basic "can be read" capability
+    struct direct_readable : readable {};   // readable directly by CPU instruction
+    struct writable {};                     // can be written
+
+These traits can be combined by multiple inheritance to express compound
+capabilities:
+
+    struct rw  : readable, writable {};             // normal read/write
+    struct drw : direct_readable, writable {};      // direct-read + write
+
+-----------------------------------------------------------------------------
+THE LOGIC BEHIND THE TEMPLATE
+-----------------------------------------------------------------------------
+
+Simplified : think of "int x = condition ? 10 : 20;" which could be evaluated at compile time.. 
+
+The template alias:
+
+    template <bool Local>
+    using writable_locally_readable = std::conditional_t<Local, drw, rw>;
+
+reads as:
+
+    "If Local == true -> use type drw; else -> use type rw."
+
+In other words, it is a compile-time if-else for types.
+
+The underlying mechanism std::conditional_t is a standard C++ metafunction
+defined in <type_traits>:
+
+    std::conditional_t<Condition, TypeIfTrue, TypeIfFalse>
+
+It chooses one of two types based on a boolean condition, entirely at
+compile time. There is no runtime branching or storage overhead.
+
+-----------------------------------------------------------------------------
+INHERITANCE STRUCTURE
+-----------------------------------------------------------------------------
+
+                readable
+                   ^
+          direct_readable    writable
+                 \           /
+                  \         /
+                     drw
+
+And separately:
+
+      readable      writable
+          \          /
+           \        /
+              rw
+
+- readable represents the abstract ability to read.
+- direct_readable extends readable, meaning anything "direct-readable"
+  is also readable, but with stronger semantics (e.g., CPU ldx instruction).
+- writable represents the ability to write.
+- drw combines direct_readable and writable (local, direct-readable + writable).
+- rw combines readable and writable (generic readable + writable).
+
+So drw objects are suitable for local hardware registers
+(direct memory access), whereas rw objects represent remote or
+abstracted registers (must use read()/write() APIs).
+
+NOTE: The original comment says "fully accessible locally, write-only remotely".
+However, the alias maps Local==false to rw, and rw inherits both readable and
+writable. If "write-only remotely" was intended, the remote type would not
+inherit readable. As written, both local and remote are readable+writable,
+but "local" is direct-readable while "remote" is generic-readable.
+
+-----------------------------------------------------------------------------
+EXAMPLE USAGE
+-----------------------------------------------------------------------------
+
+Here is how a dummy Register template could use the alias:
+
+    #include <type_traits>
+    #include <cstdint>
+
+    template <bool Local>
+    struct Register : writable_locally_readable<Local> {
+        void write(uint32_t val) {
+            if constexpr (Local)
+                HW_REG = val;       // direct memory write (hardware mapped?)
+            else
+                remote_write(val);  // fall-back method
+        }
+
+        uint32_t read() const {
+            if constexpr (Local)
+                return HW_REG;      // direct read
+            else
+                return remote_read();
+        }
+
+        // Dummy implementations
+        static inline uint32_t HW_REG = 0;
+        static inline void remote_write(uint32_t v) { HW_REG = v; }
+        static inline uint32_t remote_read() { return HW_REG; }
+    };
+
+Then:
+
+    Register<true>  local_reg;   // behaves as drw (direct-readable, writable)
+    Register<false> remote_reg;  // behaves as rw  (readable, writable)
+
+    local_reg.write(42);         // direct memory access
+    remote_reg.write(42);        // simulated or bus-based access
+
+-----------------------------------------------------------------------------
+DEBUGGING PERSPECTIVE (personal take)
+-----------------------------------------------------------------------------
+
+This pattern is extremely powerful but can be hard to debug. When you call
+something seemingly trivial like:
+
+    dump_register(local_reg);
+
+the compiler performs a large amount of type reasoning behind the scenes:
+it checks whether the passed type derives from readable, whether it has a
+valid read() function, and whether that function itself meets template
+constraints. A failure in any of these steps can produce long, confusing
+template error traces.
+
+To mitigate this, developers often use:
+  - static_assert() with clear diagnostic messages
+  - concepts (C++20) for constraint-based error readability
+  - explicit type aliases during debugging.

@@ -77,6 +77,37 @@ public:
     return *this;
   }
 
+  String operator+(const String &other) noexcept {
+
+    size_t new_length = m_length + other.m_length;
+    String new_str;
+
+    if (new_length == 0) {
+      // both empty or other is empty
+      return new_str;
+    }
+
+    char *new_buffer = new char[new_length + 1];
+    if (!new_buffer) {
+      // allocation failed, keep old data
+      return new_str;
+    }
+
+    new_buffer[new_length] = '\0';
+
+    if (m_data) {
+      memcpy(new_buffer, m_data, m_length);
+    }
+
+    if (other.m_data) {
+      memcpy(new_buffer + m_length, other.m_data, other.m_length);
+    }
+
+    new_str.m_data = new_buffer;
+    new_str.m_length = new_length;
+    return new_str;
+  }
+
   String substr(size_t pos, size_t len) const {
     if (pos >= m_length)
       return String();
@@ -95,6 +126,7 @@ public:
   bool operator==(const String &other) const { return are_equal(other); }
   bool operator!=(const String &other) const { return !(*this == other); }
 
+
 private:
   char *m_data = NULL;
   size_t m_length = 0;
@@ -108,5 +140,13 @@ private:
     return strcmp(m_data, other.m_data) == 0;
   }
 };
+
+// ?!
+
+// Implementation of the friend function
+inline std::ostream &operator<<(std::ostream &os, const String &str) {
+  os << str.c_str(); 
+  return os;
+}
 
 #endif // STR_H

@@ -198,6 +198,11 @@ TEST_FUNC(container) {
 TEST_FUNC(str) {
 
   String s1("abcd");
+  String s_extra("efgh");
+  String s_all = s1 + s_extra;
+
+  std::cout << "s_all: " << s_all << "\n";
+  
   assert(s1.size() == 4);
   String s2;
   assert(s2.size() == 0);
@@ -207,8 +212,11 @@ TEST_FUNC(str) {
   assert(s1 != s2);
   assert(s1 == "1bcd");
   String sub = s1.substr(1, 2); // take 2 symbols beginning from position 1
+  
   assert(sub == "bc");
+  
   String s3 = std::move(s1);
+  
   assert(s3 != s1);
   assert(s1 == "");
 
@@ -396,5 +404,6 @@ TEST_FUNC(enumerator) {
   return 0;
 
 }
+
 
 #endif
