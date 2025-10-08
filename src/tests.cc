@@ -3,6 +3,7 @@
 
 #if __cplusplus >= 201703L
 
+#include "add_concept.h"
 #include "aloc.h"
 #include "container.h"
 #include "func_reg.h"
@@ -15,6 +16,7 @@
 #include "vect.h"
 #include <bits/stdc++.h>
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 ///////////////////////////////////////////////////
@@ -354,7 +356,7 @@ TEST_FUNC(materialized_prval) {
 }
 
 TEST_FUNC(single) {
-  
+
   auto &a = Singleton::instance();
   a.hello();
 
@@ -367,5 +369,32 @@ TEST_FUNC(single) {
   return 0;
 }
 
+TEST_FUNC(concepts) {
+
+  auto x = add_test(3, 4);
+  return 0;
+}
+
+enum class mss_index_t : uint32_t { _0, _1, _2, _3 };
+
+inline mss_index_t &operator++(mss_index_t &val) {
+  using int_type = std::underlying_type_t<mss_index_t>;
+  return val = mss_index_t(int_type(val) + 1);
+}
+
+
+TEST_FUNC(enumerator) {
+
+  mss_index_t idx = mss_index_t::_0;
+  mss_index_t i =  mss_index_t::_0;
+
+  i = static_cast<mss_index_t>(static_cast<int>(i) + 1); 
+
+  ++idx;
+  std::cout << static_cast<uint32_t>(idx) << "\n"; // prints 1
+
+  return 0;
+
+}
 
 #endif

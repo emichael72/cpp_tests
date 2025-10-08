@@ -15,15 +15,29 @@ and To allow efficient moving (transferring ownership without copying).
 */
 
 #include <iostream>
+#include <cxxabi.h>
 #include <cstring>   // for std::memcpy
 #include <utility>   // for std::move
+
+std::string demangle(const char* name) { // c++ mangled text to human readable string 
+    int status;
+    char* demangled = abi::__cxa_demangle(name, nullptr, nullptr, &status);
+    std::string result = (status == 0) ? demangled : name;
+    free(demangled);
+    return result;
+}
+
+template <typename T>
+void print_type() {
+    std::cout << demangle(typeid(T).name()) << '\n';
+}
 
 template<typename T>
 class Buffer {
 public:
     explicit Buffer(size_t size)
         : m_size(size), m_data(new T[size]) {
-        std::cout << "Constructed (" << m_size << " elements)\n";
+        std::cout << "Constructed (" << m_size << " elements of type " << demangle(typeid(T).name()) << ")\n";
     }
 
     ~Buffer() {

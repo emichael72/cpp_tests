@@ -56,11 +56,11 @@ int buff_tester() {
   Buffer<int> *bufP = new Buffer<int>(10);
   Buffer<int> &bufR = *bufP;
 
-  // Access through reference (preferred)
+  // Access through reference
   for (size_t i = 0; i < bufR.size(); ++i)
     bufR[i] = static_cast<int>(i * 10);
 
-  Buffer<int> bufA = bufR; // Copy constructor (note the '*')
+  Buffer<int> bufA = bufR; // Copy constructor 
   Buffer<int> bufB =
       std::move(bufR); // Move constructor (P & R state becomes undefined)
 

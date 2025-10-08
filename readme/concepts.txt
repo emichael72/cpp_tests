@@ -1,0 +1,52 @@
+C++ CONCEPTS
+============
+
+Simply put:
+Concepts are like Python’s abstract interfaces, but evaluated entirely at **compile time**.
+They act as a **compile-time dry run** — the compiler checks that a given type
+supports specific methods or expressions before generating any code.
+
+---
+
+# Example 1: Define a concept
+
+// Defines a concept named 'Quackable'.
+// It is satisfied when type T exposes a callable method named 'quack()'.
+
+template <typename T>
+concept Quackable = requires(T t) {
+    t.val >= 200; 
+    //t.quack();
+};
+
+---
+
+# Example 2: Use the concept in a template
+
+// Uses the concept 'Quackable' to restrict valid template arguments.
+// Since 'T' must satisfy 'Quackable', we can safely call 't.quack()' inside.
+
+template <Quackable T>
+void make_it_quack(T t) {
+    t.quack();
+}
+
+---
+
+# Why use concepts?
+
+Templates in C++ are extremely flexible — sometimes *too* flexible.
+Without constraints, they can accept almost any type, producing long and confusing
+error messages when something doesn’t fit.
+
+Concepts fix that by:
+  - Restricting which types can be used in a template
+  - Making intent explicit and readable
+  - Generating short, clear compile-time diagnostics
+  - Adding zero runtime cost (purely a compile-time feature)
+
+---
+
+# In one line:
+Concepts bring **compile-time sanity checks** to templates —
+they ensure “if it quacks like a duck,” it *really can quack*, long before your program runs.
