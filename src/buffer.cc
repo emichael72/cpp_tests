@@ -1,4 +1,5 @@
 
+#ifdef BUILD_BUFFER_TESTS
 
 #include "buff_mngr.h"
 #include <iostream>
@@ -50,7 +51,26 @@ private:
   char m_val;
 };
 
-int buff_tester() {
+int class_tester() {
+
+  int ret_val = 1;
+
+  TestClass tst_class_a('a'); // direct
+  TestClass tst_class_b = TestClass(
+      'b'); // copy constructor not processed due to elision optimization
+
+  tst_class_a = tst_class_b; // copy assignment
+  ret_val = tst_class_b();   // invocation through () overload
+  TestClass tst_class_c('c');
+
+  tst_class_c = std::move(tst_class_b); // move assignment
+
+  tst_class_b();
+
+  return ret_val;
+}
+
+int main() {
   int ret_val = 1;
 
   Buffer<int> *bufP = new Buffer<int>(10);
@@ -74,21 +94,5 @@ int buff_tester() {
   return ret_val;
 }
 
-int class_tester() {
 
-  int ret_val = 1;
-
-  TestClass tst_class_a('a'); // direct
-  TestClass tst_class_b = TestClass(
-      'b'); // copy constructor not processed due to elision optimization
-
-  tst_class_a = tst_class_b; // copy assignment
-  ret_val = tst_class_b();   // invocation through () overload
-  TestClass tst_class_c('c');
-
-  tst_class_c = std::move(tst_class_b); // move assignment
-
-  tst_class_b();
-
-  return ret_val;
-}
+#endif // BUILD_BUFFER_TESTS

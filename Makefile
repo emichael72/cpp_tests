@@ -2,9 +2,11 @@
 CXX := clang++
 CXX_STD := 20
 CXXFLAGS := -std=c++$(CXX_STD) -fpermissive -ftemplate-backtrace-limit=0 -O0 -g3 -Iinc
-CXXFLAGS += -fdiagnostics-absolute-paths
+CXXFLAGS += -fdiagnostics-absolute-paths 
 
-# g++ -std=c++11 -fpermissive -ftemplate-backtrace-limit=0 primes.cpp
+# CXXFLAGS += -DBUILD_ALL_TESTS
+# CXXFLAGS += -DBUILD_BUFFER_TESTS
+CXXFLAGS += -DBUILD_TEMPLATES_TESTS
 
 # Source and output directories
 SRC_DIR := src
