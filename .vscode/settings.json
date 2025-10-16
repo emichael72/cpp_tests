@@ -47,7 +47,15 @@
         "ostream": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "any": "cpp",
+        "charconv": "cpp",
+        "complex": "cpp",
+        "ranges": "cpp",
+        "ratio": "cpp",
+        "scoped_allocator": "cpp",
+        "variant": "cpp",
+        "chrono": "cpp"
     },
     "cSpell.words": [
         "overflexability"

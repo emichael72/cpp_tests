@@ -1,7 +1,10 @@
 # Compiler and flags
 CXX := clang++
 CXX_STD := 20
-CXXFLAGS := -std=c++20 -O0 -g3 -Iinc
+CXXFLAGS := -std=c++$(CXX_STD) -fpermissive -ftemplate-backtrace-limit=0 -O0 -g3 -Iinc
+CXXFLAGS += -fdiagnostics-absolute-paths
+
+# g++ -std=c++11 -fpermissive -ftemplate-backtrace-limit=0 primes.cpp
 
 # Source and output directories
 SRC_DIR := src

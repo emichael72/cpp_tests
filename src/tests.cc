@@ -200,6 +200,8 @@ TEST_FUNC(str) {
   String s1("abcd");
   String s_extra("efgh");
   String s_all = s1 + s_extra;
+  
+  //String &s_r = s1;
 
   std::cout << "s_all: " << s_all << "\n";
   
@@ -405,5 +407,34 @@ TEST_FUNC(enumerator) {
 
 }
 
+void ref_swap(int& i, int& j)
+{
+  int tmp = i;
 
+  i = j;
+  j = tmp;
+}
+
+void c_swap(int* i, int* j)
+{
+  int tmp = *i;
+  *i = *j;
+  *j = tmp;
+}
+
+TEST_FUNC(no_name) {
+
+
+  int x = 4, y = 2;
+  
+  ref_swap(x,y);
+  c_swap(&x,&y);
+
+  const char* s = "test";
+  const char* const& r_s = s;  
+
+  return 0;
+
+
+}
 #endif
