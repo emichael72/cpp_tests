@@ -2,10 +2,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build with make",
+      "label": "Build All Tests",
       "type": "shell",
-      "command": "bear --output .vscode/compile_commands.json -- make",
-      "args": [],
+      "command": "make",
+      "args": ["BUILD_TARGET=BUILD_ALL_TESTS"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -13,6 +13,50 @@
         "kind": "build",
         "isDefault": true
       },
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build Advance Tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["BUILD_TARGET=BUILD_ADVANCE_TESTS"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build Buffer Tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["BUILD_TARGET=BUILD_BUFFER_TESTS"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+    {
+      "label": "Build Templates Tests",
+      "type": "shell",
+      "command": "make",
+      "args": ["BUILD_TARGET=BUILD_TEMPLATES_TESTS"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": "$gcc"
+    },
+{
+      "label": "Clean",
+      "type": "shell",
+      "command": "make",
+      "args": ["clean"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
       "problemMatcher": "$gcc"
     }
   ]

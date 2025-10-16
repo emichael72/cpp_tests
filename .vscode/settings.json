@@ -1,7 +1,7 @@
 {
     // "launch.defaultConfigurationName": "Debug main (GDB)",
     "launch.defaultConfigurationName": "Debug main (CodeLLDB)",
-    "C_Cpp.default.compileCommands": "compile_commands.json",
+    "C_Cpp.default.compileCommands": ".vscode/compile_commands.json",
     "files.associations": {
         "memory": "cpp",
         "array": "cpp",
@@ -59,5 +59,7 @@
     },
     "cSpell.words": [
         "overflexability"
-    ]
+    ],
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false
 }
