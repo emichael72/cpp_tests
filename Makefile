@@ -10,12 +10,6 @@ BUILD_TARGET ?= BUILD_ALL_TESTS
 # Add the build target flag
 CXXFLAGS += -D$(BUILD_TARGET)
 
-
-# CXXFLAGS += -DBUILD_ALL_TESTS
-# CXXFLAGS += -DBUILD_BUFFER_TESTS
-# CXXFLAGS += -DBUILD_TEMPLATES_TESTS
-# CXXFLAGS += -DBUILD_ADVANCE_TESTS
-
 # Source and output directories
 SRC_DIR := src
 BIN_DIR := bin
@@ -95,4 +89,3 @@ run: all
 	@clear
 	@echo "Running $(TARGET) $(if $(ARGS),$(ARGS),-a)..."
 	@$(TARGET) $(if $(ARGS),$(ARGS),-a)
-

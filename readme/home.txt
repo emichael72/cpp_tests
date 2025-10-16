@@ -1,0 +1,23 @@
+Meta Programming: Appending Types to a Type Sequence
+---------------------------------------------------
+
+Background (brief)
+1.	Type Sequence: A template that can hold multiple types as template parameters.
+    Example container: 'type_list' - a template that can store multiple types:
+    e.g: using MyTypes = type_list<int, double, char>;
+
+2.	append_t: A metafunction (type alias template) that allows adding types to an existing type sequence.
+    So type_list<int> would be extended to type_list<int, double, char> by appending double and char.
+
+Task:
+-----
+
+Implement a metafunction that allows for:
+
+using L1 = type_list<int>;
+using L2 = append_t<L1, double, char>;  // L2 becomes type_list<int, double, char>
+
+Requirements:
+- Define the type_list template
+- Define the append_t metafunction that can append one or more types to an existing type_list
+- The result should be a new type_list containing the original types plus the appended types
