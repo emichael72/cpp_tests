@@ -1,1 +1,102 @@
-[]
+[
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-fpermissive",
+      "-ftemplate-backtrace-limit=0",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-fdiagnostics-absolute-paths",
+      "-DBUILD_ALL_TESTS",
+      "-c",
+      "-o",
+      "bin/advance.o",
+      "src/advance.cc"
+    ],
+    "directory": "/Users/eitan/Projects/cpp_tests",
+    "file": "/Users/eitan/Projects/cpp_tests/src/advance.cc",
+    "output": "/Users/eitan/Projects/cpp_tests/bin/advance.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-fpermissive",
+      "-ftemplate-backtrace-limit=0",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-fdiagnostics-absolute-paths",
+      "-DBUILD_ALL_TESTS",
+      "-c",
+      "-o",
+      "bin/all_tests.o",
+      "src/all_tests.cc"
+    ],
+    "directory": "/Users/eitan/Projects/cpp_tests",
+    "file": "/Users/eitan/Projects/cpp_tests/src/all_tests.cc",
+    "output": "/Users/eitan/Projects/cpp_tests/bin/all_tests.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-fpermissive",
+      "-ftemplate-backtrace-limit=0",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-fdiagnostics-absolute-paths",
+      "-DBUILD_ALL_TESTS",
+      "-c",
+      "-o",
+      "bin/buffer.o",
+      "src/buffer.cc"
+    ],
+    "directory": "/Users/eitan/Projects/cpp_tests",
+    "file": "/Users/eitan/Projects/cpp_tests/src/buffer.cc",
+    "output": "/Users/eitan/Projects/cpp_tests/bin/buffer.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-fpermissive",
+      "-ftemplate-backtrace-limit=0",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-fdiagnostics-absolute-paths",
+      "-DBUILD_ALL_TESTS",
+      "-c",
+      "-o",
+      "bin/templates.o",
+      "src/templates.cc"
+    ],
+    "directory": "/Users/eitan/Projects/cpp_tests",
+    "file": "/Users/eitan/Projects/cpp_tests/src/templates.cc",
+    "output": "/Users/eitan/Projects/cpp_tests/bin/templates.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang++",
+      "-std=c++20",
+      "-fpermissive",
+      "-ftemplate-backtrace-limit=0",
+      "-O0",
+      "-g3",
+      "-Iinc",
+      "-fdiagnostics-absolute-paths",
+      "-DBUILD_ALL_TESTS",
+      "-c",
+      "-o",
+      "bin/tests.o",
+      "src/tests.cc"
+    ],
+    "directory": "/Users/eitan/Projects/cpp_tests",
+    "file": "/Users/eitan/Projects/cpp_tests/src/tests.cc",
+    "output": "/Users/eitan/Projects/cpp_tests/bin/tests.o"
+  }
+]

@@ -14,9 +14,9 @@
 #include "trace.h"
 #include "unique_ptr.h"
 #include "vect.h"
-#include <bits/stdc++.h>
 #include <iostream>
-#include <type_traits>
+#include <cassert>
+#include <type_traits> 
 #include <vector>
 
 ///////////////////////////////////////////////////
