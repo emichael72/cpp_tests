@@ -15,6 +15,7 @@
 #include "unique_ptr.h"
 #include "vect.h"
 #include <iostream>
+#include <cstring>
 #include <cassert>
 #include <type_traits> 
 #include <vector>
