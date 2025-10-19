@@ -21,3 +21,46 @@ Requirements:
 - Define the type_list template
 - Define the append_t metafunction that can append one or more types to an existing type_list
 - The result should be a new type_list containing the original types plus the appended types
+
+
+Update:
+Using tuple so:
+using T1 = std::tuple<int>;
+using T2 = append_t<T1, double, char>;  // T2 = std::tuple<int, double, char>
+
+
+==============================================================================
+
+
+primary template
+----------------
+
+// The 3 dots '...' is named 'parameter pack' 
+// - In free function (no template) same as C arbitrary args, must use #include <cstdarg> and handle similar to C (va_start(), va_arg())
+//   C loosing type information so we're forced to va_arg(, <type>) 
+// - In a template, same idea applies only being handled during compile time
+
+
+template <typename Tuple, typename... Ts>
+struct append;
+
+
+partial specialization for std::tuple<...>
+-------------------------------------------
+template <typename... Us, typename... Ts>
+struct append<std::tuple<Us...>, Ts...> {
+    using type = std::tuple<Us..., Ts...>;
+};
+
+aliasing to append_t
+--------------------
+template <typename Tuple, typename... Ts>
+using append_t = typename append<Tuple, Ts...>::type;
+
+
+
+// usage
+
+using L1 = std::tuple<int>;
+using L2 = append_t<L1, double, char>;     // std::tuple<int, double, char>
+
